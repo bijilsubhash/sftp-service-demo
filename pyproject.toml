@@ -12,5 +12,13 @@ dependencies = [
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "python-dotenv>=1.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.0",
+    "ruff>=0.12.4",
+    "task>=0.2.0",
     "types-paramiko>=3.5.0.20250708",
+    "typing-extensions==4.7.1",
 ]

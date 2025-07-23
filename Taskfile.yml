@@ -1,0 +1,34 @@
+version: "3"
+
+tasks:
+  unit-test:
+    cmds:
+      - echo "🧪 Running unit tests..."
+      - uv run pytest
+      - echo "✅ Unit tests ran successfully..."
+
+  lint:
+    cmds:
+      - echo "🧹 Running linter..."
+      - uv run ruff check --fix
+      - echo "✨ Linting completed!"
+
+  format:
+    cmds:
+      - echo "🎨 Formatting code..."
+      - uv run ruff format
+      - echo "📐 Code formatted!"
+
+  typecheck:
+    cmds:
+      - echo "🔍 Running type checks..."
+      - uv run mypy src/
+      - echo "✅ Type checking completed!"
+
+  check-all:
+    cmds:
+      - task lint
+      - task format
+      - task typecheck
+      - task unit-test
+      - echo "🚀 All checks passed!"

@@ -5,19 +5,19 @@ from contextlib import contextmanager
 
 from dotenv import load_dotenv
 
-from services.faker_service import generate_data
-from services.sftp_service import SFTPClient
-from utils.logging import Logger
+from src.services.faker_service import generate_data
+from src.services.sftp_service import SFTPClient
+from src.utils.logging import Logger
 
 load_dotenv()
 
 logger = Logger(__name__)
 
 sftp_client = SFTPClient(
-    hostName=os.getenv("hostName"),
-    port=os.getenv("port"),
-    userName=os.getenv("userName"),
-    password=os.getenv("password"),
+    hostName=os.getenv("hostName", ""),
+    port=int(os.getenv("port", 0)),
+    userName=os.getenv("userName", ""),
+    password=os.getenv("password", ""),
 )
 
 
