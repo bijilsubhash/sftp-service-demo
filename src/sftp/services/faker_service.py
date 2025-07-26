@@ -1,5 +1,4 @@
 import polars as pl
-import hashlib
 from faker import Faker
 from random import randint
 from pathlib import Path
@@ -37,9 +36,7 @@ class FakerService:
         return [
             {
                 "record_type": "customer",
-                "customer_id": hashlib.sha256(
-                    self.current_date.isoformat().encode() + str(i + 1).encode()
-                ).hexdigest(),
+                "customer_id": hash(self.current_date.isoformat() + str(i + 1)),
                 "customer_name": self.fake.name(),
                 "email": self.fake.email(),
                 "phone": self.fake.phone_number(),
@@ -126,9 +123,7 @@ class FakerService:
             products.append(
                 {
                     "record_type": "product",
-                    "product_id": hashlib.sha256(
-                        self.current_date.isoformat().encode() + str(i + 1).encode()
-                    ).hexdigest(),
+                    "product_id": hash(self.current_date.isoformat() + str(i + 1)),
                     "product_name": product_name,
                     "category": category,
                     "price": round(self.fake.random.uniform(10, 1000), 2),
@@ -158,9 +153,7 @@ class FakerService:
             orders.append(
                 {
                     "record_type": "order",
-                    "order_id": hashlib.sha256(
-                        self.current_date.isoformat().encode() + str(i + 1).encode()
-                    ).hexdigest(),
+                    "order_id": hash(self.current_date.isoformat() + str(i + 1)),
                     "customer_id": customer["customer_id"],
                     "product_id": product["product_id"],
                     "order_date": self.current_date,
