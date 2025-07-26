@@ -1,15 +1,14 @@
 import pytest
 import polars as pl
 from pathlib import Path
-from datetime import datetime
-from src.services.faker_service import FakerService
+from src.sftp.services.faker_service import FakerService
 
 
 @pytest.fixture
 def faker_service() -> FakerService:
-    test_date = datetime(2024, 1, 15)
+    test_date = "15-01-2024"
     service = FakerService(test_date)
-    service.output_dir = Path("tests/output") / test_date.strftime("%Y%m%d")
+    service.output_dir = Path("src/tests/output") / test_date.replace("-", "")
     return service
 
 

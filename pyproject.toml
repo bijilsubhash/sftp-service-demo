@@ -12,6 +12,7 @@ dependencies = [
     "pre-commit>=4.2.0",
     "pytest>=8.4.1",
     "python-dotenv>=1.1.1",
+    "python-json-logger>=3.3.0",
 ]
 
 [dependency-groups]

@@ -3,15 +3,15 @@ from faker import Faker
 from random import randint
 from pathlib import Path
 from datetime import datetime
-from utils.logging import Logger
+from logging import Logger
 
 
 class FakerService:
-    def __init__(self, current_date: datetime):
+    def __init__(self, current_date: str):
         self.fake = Faker()
         self.logger = Logger(__name__)
-        self.current_date = current_date
-        self.output_dir = Path("output") / current_date.strftime("%Y%m%d")
+        self.current_date = datetime.strptime(current_date, "%d-%m-%Y")
+        self.output_dir = Path("output") / self.current_date.strftime("%Y%m%d")
 
     def generate_data(self, size: int = 1000) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -27,7 +27,10 @@ class FakerService:
             df = pl.DataFrame(data)
             output_file = self.output_dir / f"{data[0]['record_type']}.csv"
             df.write_csv(output_file)
-            self.logger.info(f"{len(data)} records generated to {output_file}")
+            self.logger.debug(f"{len(data)} records generated to {output_file}")
+        self.logger.info(
+            f"Generated customer, product, and order data for {self.output_dir.name.split('/')[-1]}"
+        )
 
     def _generate_customers(self, count: int) -> list[dict]:
         return [
@@ -153,9 +156,7 @@ class FakerService:
                     "order_id": i + 1,
                     "customer_id": customer["customer_id"],
                     "product_id": product["product_id"],
-                    "order_date": self.fake.date_between(
-                        start_date="-1y", end_date="today"
-                    ).isoformat(),
+                    "order_date": self.current_date,
                     "quantity": quantity,
                     "unit_price": unit_price,
                     "total_amount": total_amount,
