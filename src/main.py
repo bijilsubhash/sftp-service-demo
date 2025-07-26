@@ -45,7 +45,7 @@ def upload_data(data_dir: Path) -> None:
         ]:
             local_file = data_dir / csv_file
             if local_file.exists():
-                remote_path = f"input/{data_dir.name}/{csv_file}"
+                remote_path = f"input/{csv_file}"
                 sftp_client.put(conn, str(local_file), remote_path)
             else:
                 logger.warning(f"File not found: {local_file}")
