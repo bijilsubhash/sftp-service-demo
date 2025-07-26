@@ -3,7 +3,7 @@ from faker import Faker
 from random import randint
 from pathlib import Path
 from datetime import datetime
-from logging import Logger
+from common.utils.logging_util import Logger
 
 
 class FakerService:

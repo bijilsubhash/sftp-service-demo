@@ -1,5 +1,5 @@
 import paramiko
-from logging import Logger
+from common.utils.logging_util import Logger
 
 logger = Logger(__name__)
 

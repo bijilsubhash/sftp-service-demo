@@ -8,7 +8,7 @@ from src.sftp.services.faker_service import FakerService
 def faker_service() -> FakerService:
     test_date = "15-01-2024"
     service = FakerService(test_date)
-    service.output_dir = Path("src/tests/output") / test_date.replace("-", "")
+    service.output_dir = Path("tests/output") / test_date.replace("-", "")
     return service
 
 

@@ -10,6 +10,7 @@ dependencies = [
     "polars>=1.31.0",
     "polars-lts-cpu>=1.31.0",
     "pre-commit>=4.2.0",
+    "pydantic-settings>=2.8.1",
     "pytest>=8.4.1",
     "python-dotenv>=1.1.1",
     "python-json-logger>=3.3.0",
@@ -19,7 +20,12 @@ dependencies = [
 dev = [
     "mypy>=1.17.0",
     "ruff>=0.12.4",
-    "task>=0.2.0",
     "types-paramiko>=3.5.0.20250708",
     "typing-extensions==4.7.1",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+
+[tool.mypy]
+ignore_missing_imports = true

@@ -1,4 +1,3 @@
-import os
 import paramiko
 from typing import Generator
 from contextlib import contextmanager
@@ -6,21 +5,21 @@ from pathlib import Path
 import sys
 import re
 
-from dotenv import load_dotenv
-
 from sftp.services.faker_service import FakerService
 from sftp.services.sftp_service import SFTPClient
-from common.utils.logging import Logger
+from common.utils.logging_util import Logger
 
-load_dotenv()
+from sftp.models.config import SFTPConfig
+
+sftp_config = SFTPConfig()
 
 logger = Logger(__name__)
 
 sftp_client = SFTPClient(
-    hostName=os.getenv("hostName", ""),
-    port=int(os.getenv("port", 0)),
-    userName=os.getenv("userName", ""),
-    password=os.getenv("password", ""),
+    hostName=sftp_config.hostName,
+    port=sftp_config.port,
+    userName=sftp_config.userName,
+    password=sftp_config.password,
 )
 
 
@@ -39,7 +38,11 @@ def sftp_connection() -> Generator[SFTPClient, None, None]:
 
 def upload_data(data_dir: Path) -> None:
     with sftp_connection() as conn:
-        for csv_file in ["customer.csv", "product.csv", "order.csv"]:
+        for csv_file in [
+            "customer.csv",
+            "product.csv",
+            "order.csv",
+        ]:
             local_file = data_dir / csv_file
             if local_file.exists():
                 remote_path = f"input/{data_dir.name}/{csv_file}"
@@ -51,12 +54,16 @@ def upload_data(data_dir: Path) -> None:
 
 if __name__ == "__main__":
     args = sys.argv[1:]
+
     if not args:
         raise ValueError("No date provided")
+
     if len(args) != 1:
         raise ValueError("Only one date is allowed")
+
     if not re.match(r"^\d{2}-\d{2}-\d{4}$", args[0]):
         raise ValueError("Invalid date format")
+
     faker_service = FakerService(args[0])
     faker_service.generate_data(size=1000)
     upload_data(faker_service.output_dir)
