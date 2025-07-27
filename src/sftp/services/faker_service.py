@@ -20,126 +20,33 @@ class FakerService:
         if size <= 0:
             raise ValueError("Size must be greater than 0")
 
-        customers = self._generate_customers(min(size // 10, 100))
-        products = self._generate_products(min(size // 20, 50))
+        customers = self._load_customers()
+        products = self._load_products()
         orders = self._generate_orders(size, customers, products)
 
-        for data in [customers, products, orders]:
-            df = pl.DataFrame(data)
-            output_file = self.output_dir / f"{data[0]['record_type']}.csv"
-            df.write_csv(output_file)
-            self.logger.debug(f"{len(data)} records generated to {output_file}")
+        df = pl.DataFrame(orders)
+        output_file = self.output_dir / "order.csv"
+        df.write_csv(output_file)
+        self.logger.debug(f"{len(orders)} records generated to {output_file}")
         self.logger.info(
-            f"Generated customer, product, and order data for {self.output_dir.name.split('/')[-1]}"
+            f"Generated order data for {self.output_dir.name.split('/')[-1]}"
         )
 
-    def _generate_customers(self, count: int) -> list[dict]:
-        return [
-            {
-                "record_type": "customer",
-                "customer_id": hashlib.sha256(
-                    self.current_date.isoformat().encode() + str(i + 1).encode()
-                ).hexdigest(),
-                "customer_name": self.fake.name(),
-                "email": self.fake.email(),
-                "phone": self.fake.phone_number(),
-                "company": self.fake.company(),
-                "address": self.fake.address().replace("\n", ", "),
-                "city": self.fake.city(),
-                "country": self.fake.country(),
-                "registration_date": self.fake.date_between(
-                    start_date="-2y", end_date="today"
-                ).isoformat(),
-                "credit_limit": round(self.fake.random.uniform(1000, 50000), 2),
-            }
-            for i in range(count)
-        ]
+    def _load_customers(self) -> list[dict]:
+        customers_file = Path("data/customers.csv")
+        if not customers_file.exists():
+            raise FileNotFoundError(f"Customers file not found: {customers_file}")
 
-    def _generate_products(self, count: int) -> list[dict]:
-        categories = {
-            "Electronics": [
-                "iPhone 15 Pro",
-                "Samsung Galaxy S24",
-                "MacBook Air M3",
-                "Dell XPS 13",
-                "iPad Pro",
-                "Sony WH-1000XM5",
-                "AirPods Pro",
-                "Nintendo Switch",
-                "Google Pixel 8",
-                "Apple Watch Series 9",
-                "Bose QuietComfort 45",
-                "Sony WH-1000XM5",
-                "AirPods Pro",
-                "Nintendo Switch",
-            ],
-            "Clothing": [
-                "Levi's 501 Jeans",
-                "Nike Air Max 270",
-                "Adidas Ultraboost",
-                "Zara Basic T-Shirt",
-                "H&M Hoodie",
-                "Uniqlo Down Jacket",
-                "Converse Chuck Taylor",
-                "Nike Air Force 1",
-                "Adidas Stan Smith",
-                "Vans Old Skool",
-                "Puma Suede",
-                "Reebok Classic",
-                "New Balance 574",
-            ],
-            "Books": [
-                "The Great Gatsby",
-                "To Kill a Mockingbird",
-                "1984",
-                "Pride and Prejudice",
-                "The Catcher in the Rye",
-                "Lord of the Flies",
-                "Harry Potter",
-            ],
-            "Home & Garden": [
-                "IKEA Billy Bookshelf",
-                "Dyson V15 Vacuum",
-                "KitchenAid Stand Mixer",
-                "Instant Pot Duo",
-                "Philips Hue Bulbs",
-                "Weber Genesis Grill",
-                "Instant Pot Duo",
-                "Philips Hue Bulbs",
-                "Weber Genesis Grill",
-            ],
-            "Sports": [
-                "Wilson Tennis Racket",
-                "Spalding Basketball",
-                "Nike Running Shoes",
-                "Yeti Water Bottle",
-                "Under Armour Gym Bag",
-                "Fitbit Charge 5",
-            ],
-        }
+        df = pl.read_csv(customers_file)
+        return [{"record_type": "customer", **row} for row in df.to_dicts()]
 
-        products = []
-        for i in range(count):
-            category = self.fake.random_element(list(categories.keys()))
-            product_name = self.fake.random_element(categories[category])
+    def _load_products(self) -> list[dict]:
+        products_file = Path("data/products.csv")
+        if not products_file.exists():
+            raise FileNotFoundError(f"Products file not found: {products_file}")
 
-            products.append(
-                {
-                    "record_type": "product",
-                    "product_id": hashlib.sha256(
-                        self.current_date.isoformat().encode() + str(i + 1).encode()
-                    ).hexdigest(),
-                    "product_name": product_name,
-                    "category": category,
-                    "price": round(self.fake.random.uniform(10, 1000), 2),
-                    "cost": round(self.fake.random.uniform(5, 500), 2),
-                    "sku": self.fake.bothify(text="???-####"),
-                    "supplier": self.fake.company(),
-                    "weight": round(self.fake.random.uniform(0.1, 25.0), 2),
-                }
-            )
-
-        return products
+        df = pl.read_csv(products_file)
+        return [{"record_type": "product", **row} for row in df.to_dicts()]
 
     def _generate_orders(
         self, count: int, customers: list[dict], products: list[dict]

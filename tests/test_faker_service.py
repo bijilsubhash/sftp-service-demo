@@ -15,8 +15,6 @@ def faker_service() -> FakerService:
 def test_generate_data(faker_service: FakerService) -> None:
     faker_service.generate_data(size=100)
     assert faker_service.output_dir.exists()
-    assert (faker_service.output_dir / "customer.csv").exists()
-    assert (faker_service.output_dir / "product.csv").exists()
     assert (faker_service.output_dir / "order.csv").exists()
 
 
@@ -30,42 +28,37 @@ def test_generate_data_with_zero_size(faker_service: FakerService) -> None:
         faker_service.generate_data(size=0)
 
 
-def test_separate_csv_files_created(faker_service: FakerService) -> None:
+def test_order_csv_file_created(faker_service: FakerService) -> None:
     faker_service.generate_data(size=100)
 
-    # Check that separate CSV files are created
-    customer_df = pl.read_csv(faker_service.output_dir / "customer.csv")
-    product_df = pl.read_csv(faker_service.output_dir / "product.csv")
+    # Check that order CSV file is created
     order_df = pl.read_csv(faker_service.output_dir / "order.csv")
-
-    assert customer_df.height > 0
-    assert product_df.height > 0
     assert order_df.height > 0
 
 
-def test_customer_data_fields(faker_service: FakerService) -> None:
+def test_order_data_fields(faker_service: FakerService) -> None:
     faker_service.generate_data(size=100)
-    customer_df = pl.read_csv(faker_service.output_dir / "customer.csv")
+    order_df = pl.read_csv(faker_service.output_dir / "order.csv")
 
-    required_columns = ["customer_id", "customer_name", "email", "phone", "company"]
+    required_columns = [
+        "order_id",
+        "customer_id",
+        "product_id",
+        "order_date",
+        "quantity",
+        "unit_price",
+        "total_amount",
+    ]
     for col in required_columns:
-        assert col in customer_df.columns
-
-
-def test_product_data_fields(faker_service: FakerService) -> None:
-    faker_service.generate_data(size=100)
-    product_df = pl.read_csv(faker_service.output_dir / "product.csv")
-
-    required_columns = ["product_id", "product_name", "category", "price", "sku"]
-    for col in required_columns:
-        assert col in product_df.columns
+        assert col in order_df.columns
 
 
 def test_order_relationships(faker_service: FakerService) -> None:
     faker_service.generate_data(size=100)
 
-    customers_df = pl.read_csv(faker_service.output_dir / "customer.csv")
-    products_df = pl.read_csv(faker_service.output_dir / "product.csv")
+    # Load static customer and product data
+    customers_df = pl.read_csv("data/customers.csv")
+    products_df = pl.read_csv("data/products.csv")
     orders_df = pl.read_csv(faker_service.output_dir / "order.csv")
 
     # Verify foreign key relationships exist
@@ -79,3 +72,17 @@ def test_order_relationships(faker_service: FakerService) -> None:
     assert all(cid in customer_ids for cid in order_customer_ids)
     # All order product_ids should exist in products
     assert all(pid in product_ids for pid in order_product_ids)
+
+
+def test_load_customers(faker_service: FakerService) -> None:
+    customers = faker_service._load_customers()
+    assert len(customers) > 0
+    assert all("customer_id" in customer for customer in customers)
+    assert all("customer_name" in customer for customer in customers)
+
+
+def test_load_products(faker_service: FakerService) -> None:
+    products = faker_service._load_products()
+    assert len(products) > 0
+    assert all("product_id" in product for product in products)
+    assert all("product_name" in product for product in products)

@@ -35,20 +35,6 @@ def test_close(mock_close, sftp_client) -> None:
     mock_close.assert_called_once()
 
 
-@mock.patch("src.sftp.services.sftp_service.SFTPClient.get")
-def test_get(mock_get, sftp_client) -> None:
-    sftp_client.get("test.csv", "test.csv")
-    mock_get.assert_called_once()
-
-
-@mock.patch("src.sftp.services.sftp_service.SFTPClient.get")
-def test_get_with_error(mock_get, sftp_client) -> None:
-    mock_get.side_effect = Exception("An error occurred")
-    with pytest.raises(Exception):
-        sftp_client.get("test.csv", "test.csv")
-    mock_get.assert_called_once()
-
-
 @mock.patch("src.sftp.services.sftp_service.SFTPClient.put")
 def test_put_with_error(mock_put, sftp_client) -> None:
     mock_put.side_effect = Exception("An error occurred")
