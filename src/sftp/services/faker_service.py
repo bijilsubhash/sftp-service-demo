@@ -25,7 +25,7 @@ class FakerService:
         orders = self._generate_orders(size, customers, products)
 
         df = pl.DataFrame(orders)
-        output_file = self.output_dir / "order.csv"
+        output_file = self.output_dir / "orders.csv"
         df.write_csv(output_file)
         self.logger.debug(f"{len(orders)} records generated to {output_file}")
         self.logger.info(

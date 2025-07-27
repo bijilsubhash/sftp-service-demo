@@ -6,25 +6,26 @@ from pathlib import Path
 from common.utils.logging_util import Logger
 from sftp.services.faker_service import FakerService
 from sftp.services.sftp_service import SFTPClient
+from sftp.models.config import SFTPConfig
 
 import dagster as dg
 
 logger = Logger(__name__)
 
-
 sftp_client = SFTPClient(
-    hostName=dg.EnvVar("hostName").get_value(),
-    port=dg.EnvVar("port").get_value(),
-    userName=dg.EnvVar("userName").get_value(),
-    password=dg.EnvVar("password").get_value(),
+    hostName=dg.EnvVar("hostName").get_value() or SFTPConfig().hostName,
+    port=dg.EnvVar("port").get_value() or SFTPConfig().port,
+    userName=dg.EnvVar("userName").get_value() or SFTPConfig().userName,
+    password=dg.EnvVar("password").get_value() or SFTPConfig().password,
 )
 
 
-def upload_data(csv_file: str, data_dir: Path | None = None) -> None:
+def upload_data(csv_file: str, data_dir: Path | None = None) -> int:
+    row_count = 0
     try:
         sftp_conn = sftp_client.connect()
 
-        if csv_file in ["customer.csv", "product.csv"]:
+        if csv_file in ["customers.csv", "products.csv"]:
             local_file = Path("data") / csv_file
         elif data_dir:
             local_file = data_dir / csv_file
@@ -32,11 +33,14 @@ def upload_data(csv_file: str, data_dir: Path | None = None) -> None:
         if local_file.exists():
             remote_path = f"input/{csv_file}"
             sftp_client.put(sftp_conn, str(local_file), remote_path)
+            row_count = len(local_file.read_text().splitlines())
             logger.info(f"Uploaded {csv_file} from {local_file}")
         else:
             logger.warning(f"File not found: {local_file}")
     finally:
         sftp_client.close()
+
+    return row_count
 
 
 # used for local testing
@@ -56,4 +60,4 @@ if __name__ == "__main__":
 
     faker_service = FakerService(args[0])
     faker_service.generate_data(size=1000)
-    upload_data("order.csv", faker_service.output_dir)
+    upload_data("orders.csv", faker_service.output_dir)

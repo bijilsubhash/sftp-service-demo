@@ -1,3 +1,3 @@
-CUSTOMER_FILE_NAME = "customer.csv"
-PRODUCT_FILE_NAME = "product.csv"
-ORDER_FILE_NAME = "order.csv"
+CUSTOMER_FILE_NAME = "customers.csv"
+PRODUCT_FILE_NAME = "products.csv"
+ORDER_FILE_NAME = "orders.csv"
