@@ -1,0 +1,21 @@
+customer_id,customer_name,email,phone,company,address,city,country,registration_date,credit_limit
+cust001,John Smith,john.smith@email.com,+1-555-0101,Tech Solutions Inc,"123 Main St, Suite 100",New York,United States,2022-03-15,25000.00
+cust002,Sarah Johnson,sarah.johnson@email.com,+1-555-0102,Digital Marketing Co,"456 Oak Ave, Floor 2",Los Angeles,United States,2021-11-22,35000.00
+cust003,Michael Brown,michael.brown@email.com,+1-555-0103,Global Enterprises,"789 Pine Rd, Building A",Chicago,United States,2023-01-08,45000.00
+cust004,Emily Davis,emily.davis@email.com,+1-555-0104,Innovative Systems,"321 Elm St, Office 5",Houston,United States,2022-07-14,30000.00
+cust005,Robert Wilson,robert.wilson@email.com,+1-555-0105,Future Tech Ltd,"654 Maple Dr, Unit 3",Phoenix,United States,2023-04-12,40000.00
+cust006,Jennifer Miller,jennifer.miller@email.com,+1-555-0106,Creative Solutions,"987 Cedar Ln, Suite 8",Philadelphia,United States,2022-09-03,28000.00
+cust007,David Anderson,david.anderson@email.com,+1-555-0107,Smart Business Corp,"147 Birch Way, Floor 1",San Antonio,United States,2023-02-28,32000.00
+cust008,Lisa Thompson,lisa.thompson@email.com,+1-555-0108,Dynamic Ventures,"258 Walnut St, Office 12",San Diego,United States,2021-12-16,37000.00
+cust009,James Garcia,james.garcia@email.com,+1-555-0109,Progressive Solutions,"369 Ash Blvd, Building B",Dallas,United States,2022-05-21,33000.00
+cust010,Mary Martinez,mary.martinez@email.com,+1-555-0110,NextGen Industries,"741 Spruce Ave, Suite 6",San Jose,United States,2023-06-09,41000.00
+cust011,Christopher Lee,christopher.lee@email.com,+1-555-0111,Advanced Systems,"852 Willow Rd, Unit 9",Austin,United States,2022-10-17,29000.00
+cust012,Jessica White,jessica.white@email.com,+1-555-0112,Modern Enterprises,"963 Poplar St, Floor 3",Jacksonville,United States,2023-03-25,36000.00
+cust013,Matthew Taylor,matthew.taylor@email.com,+1-555-0113,Strategic Partners,"159 Hickory Dr, Office 15",Fort Worth,United States,2021-08-11,43000.00
+cust014,Amanda Thomas,amanda.thomas@email.com,+1-555-0114,Elite Solutions,"753 Magnolia Ln, Building C",Columbus,United States,2022-12-04,31000.00
+cust015,Daniel Jackson,daniel.jackson@email.com,+1-555-0115,Premium Services,"486 Dogwood Way, Suite 11",Charlotte,United States,2023-01-19,38000.00
+cust016,Michelle Harris,michelle.harris@email.com,+1-555-0116,Quality Systems,"672 Redwood Ave, Unit 7",San Francisco,United States,2022-04-30,42000.00
+cust017,Andrew Clark,andrew.clark@email.com,+1-555-0117,Professional Group,"184 Cypress St, Floor 2",Indianapolis,United States,2023-05-13,34000.00
+cust018,Stephanie Lewis,stephanie.lewis@email.com,+1-555-0118,Excellence Corp,"295 Fir Blvd, Office 4",Seattle,United States,2021-10-26,39000.00
+cust019,Kevin Rodriguez,kevin.rodriguez@email.com,+1-555-0119,Innovation Hub,"506 Chestnut Rd, Building D",Denver,United States,2022-08-07,35500.00
+cust020,Nicole Walker,nicole.walker@email.com,+1-555-0120,Success Partners,"617 Beech Dr, Suite 13",Washington,United States,2023-07-22,46000.00

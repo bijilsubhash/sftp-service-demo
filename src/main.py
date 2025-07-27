@@ -1,69 +1,59 @@
 import sys
 import re
-import paramiko
 
 from pathlib import Path
-from typing import Generator
-from contextlib import contextmanager
 
 from common.utils.logging_util import Logger
-from sftp.models.config import SFTPConfig
 from sftp.services.faker_service import FakerService
 from sftp.services.sftp_service import SFTPClient
 
-sftp_config = SFTPConfig()
+import dagster as dg
 
 logger = Logger(__name__)
 
+
 sftp_client = SFTPClient(
-    hostName=sftp_config.hostName,
-    port=sftp_config.port,
-    userName=sftp_config.userName,
-    password=sftp_config.password,
+    hostName=dg.EnvVar("hostName").get_value(),
+    port=dg.EnvVar("port").get_value(),
+    userName=dg.EnvVar("userName").get_value(),
+    password=dg.EnvVar("password").get_value(),
 )
 
 
-@contextmanager
-def sftp_connection() -> Generator[SFTPClient, None, None]:
+def upload_data(csv_file: str, data_dir: Path | None = None) -> None:
     try:
-        sftp_client.connect()
-        yield sftp_client.SSH_Client.open_sftp()
-    except paramiko.AuthenticationException as e:
-        logger.error(f"Authentication failed: {e}")
-    except Exception as e:
-        logger.error(f"Uncaught exception: {e}")
+        sftp_conn = sftp_client.connect()
+
+        if csv_file in ["customer.csv", "product.csv"]:
+            local_file = Path("data") / csv_file
+        elif data_dir:
+            local_file = data_dir / csv_file
+
+        if local_file.exists():
+            remote_path = f"input/{csv_file}"
+            sftp_client.put(sftp_conn, str(local_file), remote_path)
+            logger.info(f"Uploaded {csv_file} from {local_file}")
+        else:
+            logger.warning(f"File not found: {local_file}")
     finally:
         sftp_client.close()
 
 
-def upload_data(data_dir: Path) -> None:
-    with sftp_connection() as conn:
-        for csv_file in [
-            "customer.csv",
-            "product.csv",
-            "order.csv",
-        ]:
-            local_file = data_dir / csv_file
-            if local_file.exists():
-                remote_path = f"input/{csv_file}"
-                sftp_client.put(conn, str(local_file), remote_path)
-            else:
-                logger.warning(f"File not found: {local_file}")
-        logger.info(f"Uploaded data for {data_dir.name}")
-
-
+# used for local testing
 if __name__ == "__main__":
     args = sys.argv[1:]
 
     if not args:
-        raise ValueError("No date provided")
+        raise ValueError(
+            "No argument provided. Please provide a date in format DD-MM-YYYY"
+        )
 
     if len(args) != 1:
-        raise ValueError("Only one date is allowed")
+        raise ValueError("Only one argument is allowed")
 
     if not re.match(r"^\d{2}-\d{2}-\d{4}$", args[0]):
         raise ValueError("Invalid date format")
 
     faker_service = FakerService(args[0])
     faker_service.generate_data(size=1000)
-    upload_data(faker_service.output_dir)
+    upload_data("order.csv", faker_service.output_dir)
