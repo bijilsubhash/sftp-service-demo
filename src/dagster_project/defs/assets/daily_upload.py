@@ -11,24 +11,39 @@ from dagster_project.constants import (
 )
 
 
-@dg.asset(partitions_def=daily_partition)
-def order(context: dg.AssetExecutionContext) -> None:
+@dg.asset(partitions_def=daily_partition, group_name="sftp")
+def order(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Generate fake order data and upload to SFTP server for date."""
     date_formatted = datetime.strptime(context.partition_key, "%Y-%m-%d").strftime(
         "%d-%m-%Y"
     )
     faker_service = FakerService(date_formatted)
     faker_service.generate_data(size=1000)
-    upload_data(ORDER_FILE_NAME, faker_service.output_dir)
+    row_count = upload_data(ORDER_FILE_NAME, faker_service.output_dir)
+    return dg.MaterializeResult(
+        metadata={
+            "Number of rows uploaded": row_count,
+        },
+    )
 
 
-@dg.asset
-def customer() -> None:
+@dg.asset(group_name="sftp")
+def customer() -> dg.MaterializeResult:
     """Load customer data and upload to SFTP server."""
-    upload_data(CUSTOMER_FILE_NAME)
+    row_count = upload_data(CUSTOMER_FILE_NAME)
+    return dg.MaterializeResult(
+        metadata={
+            "Number of rows uploaded": row_count,
+        },
+    )
 
 
-@dg.asset
-def product() -> None:
+@dg.asset(group_name="sftp")
+def product() -> dg.MaterializeResult:
     """Load product data and upload to SFTP server."""
-    upload_data(PRODUCT_FILE_NAME)
+    row_count = upload_data(PRODUCT_FILE_NAME)
+    return dg.MaterializeResult(
+        metadata={
+            "Number of rows uploaded": row_count,
+        },
+    )

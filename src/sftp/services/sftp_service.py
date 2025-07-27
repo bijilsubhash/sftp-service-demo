@@ -15,7 +15,6 @@ class SFTPClient:
         self.SSH_Client = paramiko.SSHClient()
         self.SSH_Client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         try:
-            logger.info(f"Connecting to {self.hostName}:{self.port} as {self.userName}")
             self.SSH_Client.connect(
                 hostname=self.hostName,
                 port=self.port,
@@ -23,11 +22,7 @@ class SFTPClient:
                 password=self.password,
                 look_for_keys=False,
                 allow_agent=False,
-                timeout=30,
-                banner_timeout=30,
-                auth_timeout=30,
             )
-            logger.info(f"SSH connection established to {self.hostName}")
             sftp_client = self.SSH_Client.open_sftp()
             logger.info("SFTP channel opened successfully")
             return sftp_client
