@@ -1,4 +1,5 @@
 locations:
   - location_name: dagster_project
     code_source:
-      module_name: src.dagster_project.definitions
+      module_name: dagster_project.definitions
+    working_directory: src
