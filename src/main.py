@@ -1,7 +1,9 @@
 import sys
 import re
 
+from datetime import datetime
 from pathlib import Path
+
 
 from common.utils.logging_util import Logger
 from sftp.services.faker_service import FakerService
@@ -20,8 +22,16 @@ sftp_client = SFTPClient(
 )
 
 
-def upload_data(csv_file: str, data_dir: Path | None = None) -> int:
+def upload_data(
+    csv_file: str, data_dir: Path | None = None, date: str | None = None
+) -> int:
     row_count = 0
+    if date:
+        date_formatted = datetime.strptime(date, "%d-%m-%Y").strftime("%Y%m%d")
+        remote_path = f"input/{date_formatted}/{csv_file}"
+    else:
+        remote_path = f"input/{csv_file}"
+
     try:
         sftp_conn = sftp_client.connect()
 
@@ -31,7 +41,6 @@ def upload_data(csv_file: str, data_dir: Path | None = None) -> int:
             local_file = data_dir / csv_file
 
         if local_file.exists():
-            remote_path = f"input/{csv_file}"
             sftp_client.put(sftp_conn, str(local_file), remote_path)
             row_count = len(local_file.read_text().splitlines())
             logger.info(f"Uploaded {csv_file} from {local_file}")
@@ -60,4 +69,5 @@ if __name__ == "__main__":
 
     faker_service = FakerService(args[0])
     faker_service.generate_data(size=1000)
-    upload_data("orders.csv", faker_service.output_dir)
+
+    upload_data("orders.csv", faker_service.output_dir, args[0])
