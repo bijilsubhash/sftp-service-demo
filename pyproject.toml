@@ -42,6 +42,4 @@ directory_type = "project"
 
 [tool.dg.project]
 root_module = "dagster_project"
-registry_modules = [
-    "dagster_project.components.*",
-]
+code_location_target_module = "dagster_project.definitions"
