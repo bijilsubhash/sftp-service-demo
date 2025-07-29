@@ -8,17 +8,16 @@ from pathlib import Path
 from common.utils.logging_util import Logger
 from sftp.services.faker_service import FakerService
 from sftp.services.sftp_service import SFTPClient
-from sftp.models.config import SFTPConfig
 
 import dagster as dg
 
 logger = Logger(__name__)
 
 sftp_client = SFTPClient(
-    hostName=dg.EnvVar("hostName").get_value() or SFTPConfig().hostName,
-    port=dg.EnvVar("port").get_value() or SFTPConfig().port,
-    userName=dg.EnvVar("userName").get_value() or SFTPConfig().userName,
-    password=dg.EnvVar("password").get_value() or SFTPConfig().password,
+    hostName=dg.EnvVar("hostName").get_value(),
+    port=dg.EnvVar("port").get_value(),
+    userName=dg.EnvVar("userName").get_value(),
+    password=dg.EnvVar("password").get_value(),
 )
 
 
