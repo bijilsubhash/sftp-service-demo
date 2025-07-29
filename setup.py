@@ -13,6 +13,7 @@ setup(
         "polars>=1.23.0",
         "pydantic>=2.10.6",
         "pydantic-settings>=2.5.2",
+        "python-json-logger>=2.0.9",
     ],
     extras_require={"dev": ["dagster-webserver", "pytest"]},
 )
