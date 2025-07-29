@@ -1,4 +1,5 @@
 locations:
   - location_name: dagster_project
     code_source:
-      package_name: src/dagster_project
+      package_name: dagster_project
+    working_directory: ./src
