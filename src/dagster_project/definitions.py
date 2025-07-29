@@ -1,8 +1,10 @@
-from pathlib import Path
+import dagster as dg
 
-from dagster import definitions, load_from_defs_folder
+from dagster_project.defs.jobs import daily_upload_job
+from dagster_project.defs.schedules import daily_upload_schedule
 
-
-@definitions
-def defs():
-    return load_from_defs_folder(project_root=Path(__file__).parent.parent.parent)
+defs = dg.Definitions(
+    assets=dg.load_assets_from_package_name("dagster_project.defs.assets"),
+    jobs=[daily_upload_job],
+    schedules=[daily_upload_schedule],
+)
