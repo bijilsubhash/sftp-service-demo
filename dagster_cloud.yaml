@@ -1,5 +1,4 @@
 locations:
   - location_name: dagster_project
     code_source:
-      python_file: definitions.py
-    working_directory: ./src/dagster_project
+      package_name: dagster_project
