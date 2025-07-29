@@ -5,6 +5,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "dagster",
+        "dagster-cloud",
         "faker>=37.4.2",
         "paramiko>=3.3.1",
         "polars>=1.23.0",
