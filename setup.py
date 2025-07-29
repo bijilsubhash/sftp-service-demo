@@ -11,6 +11,7 @@ setup(
         "faker>=37.4.2",
         "paramiko>=3.3.1",
         "polars>=1.23.0",
+        "polars-lts-cpu>=1.23.0",
         "pydantic>=2.10.6",
         "pydantic-settings>=2.5.2",
         "python-json-logger>=2.0.9",
