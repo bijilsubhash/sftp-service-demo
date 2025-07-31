@@ -39,7 +39,9 @@ def product(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     )
 
 
-@dg.asset(deps=["customer", "product"], group_name="sftp")
+@dg.asset(
+    deps=["customer", "product"], group_name="sftp", partitions_def=daily_partition
+)
 def order(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Generate fake order data and upload to SFTP server for date."""
     date_formatted = _get_date_formatted(context.partition_key)
