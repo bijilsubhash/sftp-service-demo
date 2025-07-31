@@ -12,7 +12,10 @@ from dagster_project.constants import (
 
 
 def _get_date_formatted(context: dg.AssetExecutionContext) -> str:
-    return datetime.strptime(context.partition_key, "%Y-%m-%d").strftime("%d-%m-%Y")
+    try:
+        return datetime.strptime(context.partition_key, "%Y-%m-%d").strftime("%d-%m-%Y")
+    except ValueError:
+        return datetime.now().strftime("%d-%m-%Y")
 
 
 @dg.asset(group_name="sftp")
