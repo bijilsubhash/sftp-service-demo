@@ -40,7 +40,9 @@ def sftp_products(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 
 
 @dg.asset(
-    deps=["customers", "products"], group_name="sftp", partitions_def=daily_partition
+    deps=["sftp_customers", "sftp_products"],
+    group_name="sftp",
+    partitions_def=daily_partition,
 )
 def sftp_orders(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Generate fake order data and upload to SFTP server for date."""
