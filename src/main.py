@@ -13,18 +13,17 @@ import dagster as dg
 
 logger = Logger(__name__)
 
-sftp_client = SFTPClient(
-    hostName=dg.EnvVar("hostName").get_value(),
-    port=dg.EnvVar("port").get_value(),
-    userName=dg.EnvVar("userName").get_value(),
-    password=dg.EnvVar("password").get_value(),
-)
-
 
 def upload_data(
     csv_file: str, data_dir: Path | None = None, date: str | None = None
 ) -> int:
     row_count = 0
+    sftp_client = SFTPClient(
+    hostName=dg.EnvVar("hostName").get_value(),
+    port=dg.EnvVar("port").get_value(),
+    userName=dg.EnvVar("userName").get_value(),
+    password=dg.EnvVar("password").get_value(),
+)
     if date:
         date_formatted = datetime.strptime(date, "%d-%m-%Y").strftime("%Y%m%d")
         remote_path = f"input/{date_formatted}/{csv_file}"
