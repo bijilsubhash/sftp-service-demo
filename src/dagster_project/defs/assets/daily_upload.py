@@ -16,7 +16,7 @@ def _get_date_formatted(date: str) -> str:
 
 
 @dg.asset(group_name="sftp", partitions_def=daily_partition)
-def customer(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def customers(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Load customer data and upload to SFTP server."""
     date_formatted = _get_date_formatted(context.partition_key)
     row_count = upload_data(CUSTOMER_FILE_NAME, date=date_formatted)
@@ -28,7 +28,7 @@ def customer(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 
 
 @dg.asset(group_name="sftp", partitions_def=daily_partition)
-def product(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def products(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Load product data and upload to SFTP server."""
     date_formatted = _get_date_formatted(context.partition_key)
     row_count = upload_data(PRODUCT_FILE_NAME, date=date_formatted)
@@ -40,9 +40,9 @@ def product(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 
 
 @dg.asset(
-    deps=["customer", "product"], group_name="sftp", partitions_def=daily_partition
+    deps=["customers", "products"], group_name="sftp", partitions_def=daily_partition
 )
-def order(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+def orders(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Generate fake order data and upload to SFTP server for date."""
     date_formatted = _get_date_formatted(context.partition_key)
     faker_service = FakerService(date_formatted)
