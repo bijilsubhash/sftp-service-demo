@@ -22,6 +22,7 @@ class SFTPClient:
                 password=self.password,
                 look_for_keys=False,
                 allow_agent=False,
+                timeout=30,
             )
             sftp_client = self.SSH_Client.open_sftp()
             logger.info("SFTP channel opened successfully")
