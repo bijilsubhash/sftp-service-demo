@@ -8,22 +8,23 @@ from pathlib import Path
 from common.utils.logging_util import Logger
 from sftp.services.faker_service import FakerService
 from sftp.services.sftp_service import SFTPClient
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import dagster as dg
 
 logger = Logger(__name__)
 
-
-
-
 def upload_data(
     csv_file: str, data_dir: Path | None = None, date: str | None = None
 ) -> int:
     sftp_client = SFTPClient(
-        hostName=dg.EnvVar("hostName").get_value(),
-        port=dg.EnvVar("port").get_value(),
-        userName=dg.EnvVar("userName").get_value(),
-        password=dg.EnvVar("password").get_value(),
+        hostName=dg.EnvVar("hostName").get_value() or os.getenv("hostName"),
+        port=dg.EnvVar("port").get_value() or os.getenv("port"),
+        userName=dg.EnvVar("userName").get_value() or os.getenv("userName"),
+        password=dg.EnvVar("password").get_value() or os.getenv("password"),
     )
     row_count = 0
     if date:
